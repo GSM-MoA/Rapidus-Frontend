@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { HeaderPorps } from '@/types/style/Header';
 
 export const HeaderContainer = styled.header`
     position: sticky;
@@ -27,10 +26,14 @@ export const Categories = styled.ul`
     align-items: flex-end;
     justify-content: space-between;
     li{
+        text-align:center;
         padding: 0px 2vw;
         &:hover{
             color:white;
         }
+    }
+    a{
+        
     }
     .choice{
         color:white

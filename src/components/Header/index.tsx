@@ -8,7 +8,6 @@ import { useState } from 'react';
 function Header() {
   const router = useRouter();
   const [showMenu, setShowMenu] = useState<string>('none');
-
   return (
     <S.HeaderContainer>
       <S.RapidusLogo>
@@ -17,34 +16,36 @@ function Header() {
         </Link>
       </S.RapidusLogo>
       <S.Categories>
-        <li>
+        <li
+          onMouseEnter={() => {
+            setShowMenu('info');
+            console.log(router);
+          }}
+          onMouseLeave={() => {
+            setShowMenu('none')
+          }}
+        >
           <Link
-            href={'/inforamtion'}
-            className={router.pathname === '/information' ? 'choice' : ''}
-            onMouseEnter={() => {
-              setShowMenu('info');
-            }}
-            onMouseLeave={() => {
-              setShowMenu('none')
-            }}
+            href={'/information/rapidus'}
+            className={router.pathname.split('/')[1] === 'information' ? 'choice' : ''}
           >
-            Inforamtion
+            Information
           </Link>
           {showMenu === 'info' && (
             <DropNav.InfoDropNav />
           )}
         </li>
 
-        <li>
+        <li
+          onMouseEnter={() => {
+            setShowMenu('gallery');
+          }}
+          onMouseLeave={() => {
+            setShowMenu('none')
+          }}>
           <Link
-            href={'/gallery'}
-            className={router.pathname === '/gellery' ? 'choice' : ''}
-            onMouseEnter={() => {
-              setShowMenu('gallery');
-            }}
-            onMouseLeave={() => {
-              setShowMenu('none')
-            }}
+            href={'/gallery/ten-second'}
+            className={router.pathname.split('/')[1] === 'gellery' ? 'choice' : ''}
           >
             Gallery
           </Link>
@@ -52,21 +53,23 @@ function Header() {
             <DropNav.GallDropNav />
           )}
         </li>
-        <li>
+        <li
+          onMouseEnter={() => {
+            setShowMenu('paint');
+          }}
+          onMouseLeave={() => {
+            setShowMenu('none')
+          }}
+        >
           <Link
-            href={'/draw'}
-            className={router.pathname === '/draw' ? 'choice' : ''}
-            onMouseEnter={() => {
-              setShowMenu('draw');
-            }}
-            onMouseLeave={() => {
-              setShowMenu('none')
-            }}
+            href={'/paint/ten-second'}
+            className={router.pathname.split('/')[1] === 'paint' ? 'choice' : ''}
+
           >
-            Draw
+            Paint
           </Link>
-          {showMenu === 'draw' && (
-            <DropNav.DrawDropNav />
+          {showMenu === 'paint' && (
+            <DropNav.PaintDropNav />
           )}
         </li>
         <li>
