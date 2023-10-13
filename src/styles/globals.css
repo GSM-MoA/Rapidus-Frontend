@@ -4,10 +4,11 @@ body {
   min-height: 100vh;
   padding: 0;
   margin: 0;
-  color: #fcffff;
   background: #FFC553;
 }
-
+@media screen and (max-width : 800px){
+  html {font-size:10px} 
+  }
 body::-webkit-scrollbar {
   display: none;
 }
@@ -20,13 +21,4 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-input {
-  font-size: 1rem;
-}
-
-button {
-  font-size: 1rem;
-  cursor: pointer;
 }
