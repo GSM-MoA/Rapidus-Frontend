@@ -1,4 +1,3 @@
-import { DropNavProps } from "@/types/components/DropNav";
 import Link from "next/link";
 import * as S from './style'
 export function InfoDropNav() {
@@ -6,10 +5,10 @@ export function InfoDropNav() {
     return (
         <S.DropNav>
             <Link href={'/information/rapidus'}>
-                Rapidus란?
+                Rapidus?
             </Link>
             <Link href={'/information/moa'}>
-                모아 동아리
+                MoA
             </Link>
         </S.DropNav>
     )
@@ -18,31 +17,31 @@ export function InfoDropNav() {
 export function GallDropNav() {
     return (
         <S.DropNav>
-                <Link href={'/gallery/10s'}>
-                    10초 그림
+                <Link href={'/gallery/ten-second'}>
+                    10s
                 </Link>
-                <Link href={'/gallery/1m'}>
-                    1분 그림
+                <Link href={'/gallery/one-minuate'}>
+                    1m
                 </Link>
-                <Link href={'/gallery/3m'}>
-                    3분 그림
+                <Link href={'/gallery/three-minuate'}>
+                    3m
                 </Link>
         </S.DropNav>
     )
 }
 
 
-export function DrawDropNav() {
+export function PaintDropNav() {
     return (
         <S.DropNav>
-                <Link href={'/gallery/10s'}>
-                    10초 게임
+                <Link href={'/paint/ten-second'}>
+                    10s
                 </Link>
-                <Link href={'/gallery/1m'}>
-                    1분 게임
+                <Link href={'/paint/one-minute'}>
+                    1m
                 </Link>
-                <Link href={'/gallery/3m'}>
-                    3분 게임
+                <Link href={'/paint/three-minuate'}>
+                    3m
                 </Link>
         </S.DropNav>
     )
