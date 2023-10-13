@@ -3,8 +3,7 @@
 export function RapidusLogo() {
   return (
     <svg
-      width="217"
-      height="85"
+      width="13rem"
       fill="none"
       viewBox="0 0 217 85"
     >

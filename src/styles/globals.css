@@ -6,7 +6,9 @@ body {
   margin: 0;
   background: #FFC553;
 }
-
+@media screen and (max-width : 800px){
+  html {font-size:10px} 
+  }
 body::-webkit-scrollbar {
   display: none;
 }
