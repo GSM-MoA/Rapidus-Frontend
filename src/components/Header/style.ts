@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 export const HeaderContainer = styled.header`
-    position: sticky;
+    position: relative;
     top: 0;
     width: 100vw;
-    height: 6rem;
+    height: 8vh;
     border: none;
     display: flex;
     align-items: center;
