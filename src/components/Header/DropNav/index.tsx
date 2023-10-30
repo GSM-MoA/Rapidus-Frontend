@@ -34,13 +34,13 @@ export function GallDropNav() {
 export function PaintDropNav() {
     return (
         <S.DropNav>
-                <Link href={'/paint/ten-second'}>
+                <Link href={'/draw/ten-second'}>
                     10s
                 </Link>
-                <Link href={'/paint/one-minute'}>
+                <Link href={'/draw/one-minute'}>
                     1m
                 </Link>
-                <Link href={'/paint/three-minuate'}>
+                <Link href={'/draw/three-minuate'}>
                     3m
                 </Link>
         </S.DropNav>
