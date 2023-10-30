@@ -4,23 +4,26 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BestGalleryType } from "@/types/components/BestGalleryType";
 import API from "@/api";
+import Footer from "./Footer";
 
 
 function HomePage() {
     const [bestImg, setBestImg] = useState<BestGalleryType[]>([]);
 
     useEffect(() => {
-        for (let id = 0; id < 3; id++) {
+        (async () => {
+            for (let id = 0; id < 3; id++) {
                 API.get(`/draw/most-liked/type/${id + 1}`)
-                .then((res) => {
-                    API.get<Blob>(`/draw/${res.data.id}/image`, { responseType: 'blob' })
-                        .then((res) => {
-                            const blob = new Blob([res.data]);
-                            const url = URL.createObjectURL(blob);
-                            setBestImg(prev => [...prev, { key: id, url: url }]);
-                        })
-                })
-        }
+                    .then(async (res) => {
+                        await API.get<Blob>(`/draw/${res.data.id}/image`, { responseType: 'blob' })
+                            .then((res) => {
+                                const blob = new Blob([res.data]);
+                                const url = URL.createObjectURL(blob);
+                                setBestImg(prev => [...prev, { key: id, url: url }]);
+                            })
+                    })
+            }
+        })()
     }, [])
 
     return (
@@ -56,6 +59,7 @@ function HomePage() {
                     )
                 })}
             </S.HomePageCanvas>
+            <Footer />
         </S.HomePageContainer>
     )
 }
