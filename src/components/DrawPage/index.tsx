@@ -2,10 +2,10 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import * as S from "./style";
 import Timer from "./Timer";
 import * as SVG from "../../../public/svg"
-import axios from "axios";
 import API from "@/api";
 export function DrawPage() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [randTheme, setRandTheme] = useState<any>('');
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
     const [currentColor, setCurrentColor] = useState<string>('#000000');
@@ -14,10 +14,13 @@ export function DrawPage() {
 
 
     useEffect(() => {
+        const randNum : Number = Math.floor(Math.random() * 20)
+        setRandTheme(API.get(`/search/theme/${randNum}`));
+
         const canvas = canvasRef.current;
         if (canvas) {
-            canvas.width = window.innerWidth * 0.5;
-            canvas.height = window.innerHeight * 0.5;
+            canvas.width = 500;
+            canvas.height = 500;
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 setContext(ctx);
@@ -26,6 +29,7 @@ export function DrawPage() {
         }
     }, []);
 
+    
     const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
         if (!context || seconds <= 0) return;
         const { offsetX, offsetY } = e.nativeEvent;
@@ -55,17 +59,40 @@ export function DrawPage() {
         if (seconds > 0) context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     }
 
-    const onUpload = () => {
-        const getCanvas: any = canvasRef.current;
-        const dataUrl = getCanvas.toDataURL('image/png');
-        const imageData = dataUrl.split(',')[1];
-        API.post(`/upload-base64`,
-            {
-                file: imageData,
-                theme: 'cat',
-                type: 1
-            }).then(res => {
+    const onUpload = async () => {
+        const getCanvas: HTMLCanvasElement | null  = canvasRef.current;
+        
+        if (!getCanvas) {
+            console.error("그림이 존재하지 않습니다.");
+            return;
+        }
+
+        const blob:Blob | null = await new Promise((resolve) => getCanvas.toBlob(resolve, 'image/png'));
+        
+        if (!blob) {
+            console.error("Blob을 생성할 수 없습니다.");
+            return;
+        }
+
+        const file = new File([blob!], 'drawing.png', { type: 'image/png' })
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('theme', randTheme);
+        formData.append('type', '1'); 
+
+        console.log(formData);
+        API.post(`/draw/upload`, formData,
+        {
+            headers:{
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+            ).then(res => {
                 console.log(res.data.file);
+            })
+            .catch(err => {
+                console.log(err);
             })
     }
 
@@ -79,6 +106,9 @@ export function DrawPage() {
 
     return (
         <S.CanvasContainer>
+            <div>
+                {randTheme}
+            </div>
             <Timer
                 initialTime={seconds}
                 onTimeout={() => {
