@@ -4,27 +4,55 @@ import Timer from "./Timer";
 import * as SVG from "../../../public/svg"
 import axios from "axios";
 import API from "@/api";
-export function DrawPage() {
+import { ThemeType } from "@/types/components/ThemeType";
+
+export function DrawPage( time : {time : number}) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [randTheme, setRandTheme] = useState<any>('');
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
     const [currentColor, setCurrentColor] = useState<string>('#000000');
-    const [seconds, setSeconds] = useState<number>(10);
+    const [seconds, setSeconds] = useState<number>(0);
     const [brushSize, setBrushSize] = useState<number>(5);
-
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (canvas) {
-            canvas.width = window.innerWidth * 0.5;
-            canvas.height = window.innerHeight * 0.5;
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-                setContext(ctx);
-                ctx.lineWidth = brushSize;
-            }
+          canvas.width = 500;
+          canvas.height = 500;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            setContext(ctx);
+            ctx.lineWidth = brushSize;
+          }
         }
-    }, []);
+    
+        switch (time.time) {
+          case 1:
+            setSeconds(10);
+            break;
+          case 2:
+            setSeconds(30);
+            break;
+          case 3:
+            setSeconds(60);
+            break;
+        }
+      }, [time.time]);
+    
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const randNum: Number = Math.floor(Math.random() * 20);
+            const response : ThemeType = (await API.get(`/draw/theme-${randNum}`)).data;
+            setRandTheme(response.krName);
+          } catch (error) {
+            console.error("API 호출 오류:", error);
+          }
+        };
+    
+        fetchData();
+      }, []);
 
     const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
         if (!context || seconds <= 0) return;
@@ -55,17 +83,39 @@ export function DrawPage() {
         if (seconds > 0) context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     }
 
-    const onUpload = () => {
-        const getCanvas: any = canvasRef.current;
-        const dataUrl = getCanvas.toDataURL('image/png');
-        const imageData = dataUrl.split(',')[1];
-        API.post(`/upload-base64`,
-            {
-                file: imageData,
-                theme: 'cat',
-                type: 1
-            }).then(res => {
+    const onUpload = async () => {
+        const getCanvas: HTMLCanvasElement | null  = canvasRef.current;
+        
+        if (!getCanvas) {
+            console.error("그림이 존재하지 않습니다.");
+            return;
+        }
+
+        const blob:Blob | null = await new Promise((resolve) => getCanvas.toBlob(resolve, 'image/png'));
+        
+        if (!blob) {
+            console.error("Blob을 생성할 수 없습니다.");
+            return;
+        }
+
+        const file = new File([blob!], 'drawing.png', { type: 'image/png' })
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('theme', randTheme);
+        formData.append('type', `${time.time}`); 
+
+        API.post(`/draw/upload`, formData,
+        {
+            headers:{
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+            ).then(res => {
                 console.log(res.data.file);
+            })
+            .catch(err => {
+                console.log(err);
             })
     }
 
@@ -79,6 +129,10 @@ export function DrawPage() {
 
     return (
         <S.CanvasContainer>
+            <S.ThemeStyle>
+                {randTheme}
+            </S.ThemeStyle>
+
             <Timer
                 initialTime={seconds}
                 onTimeout={() => {
