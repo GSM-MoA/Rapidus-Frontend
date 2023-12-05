@@ -46,3 +46,10 @@ export const UploadStyle = styled.div`
     align-items:center;
     justify-content:center;
 `
+export const ThemeStyle = styled.div`
+    display:flex;
+    text-align:center;
+    align-items:center;
+    justify-content:center;
+    font-size: 2rem;
+`

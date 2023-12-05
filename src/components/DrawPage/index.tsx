@@ -3,31 +3,54 @@ import * as S from "./style";
 import Timer from "./Timer";
 import * as SVG from "../../../public/svg"
 import API from "@/api";
-export function DrawPage() {
+import { ThemeType } from "@/types/components/ThemeType";
+export function DrawPage( time : {time : number}) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [randTheme, setRandTheme] = useState<any>('');
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
     const [currentColor, setCurrentColor] = useState<string>('#000000');
-    const [seconds, setSeconds] = useState<number>(10);
+    const [seconds, setSeconds] = useState<number>(0);
     const [brushSize, setBrushSize] = useState<number>(5);
 
-
     useEffect(() => {
-        const randNum : Number = Math.floor(Math.random() * 20)
-        setRandTheme(API.get(`/search/theme/${randNum}`));
-
         const canvas = canvasRef.current;
         if (canvas) {
-            canvas.width = 500;
-            canvas.height = 500;
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-                setContext(ctx);
-                ctx.lineWidth = brushSize;
-            }
+          canvas.width = 500;
+          canvas.height = 500;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            setContext(ctx);
+            ctx.lineWidth = brushSize;
+          }
         }
-    }, []);
+    
+        switch (time.time) {
+          case 1:
+            setSeconds(10);
+            break;
+          case 2:
+            setSeconds(30);
+            break;
+          case 3:
+            setSeconds(60);
+            break;
+        }
+      }, [time.time]);
+    
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const randNum: Number = Math.floor(Math.random() * 20);
+            const response : ThemeType = (await API.get(`/draw/theme-${randNum}`)).data;
+            setRandTheme(response.krName);
+          } catch (error) {
+            console.error("API 호출 오류:", error);
+          }
+        };
+    
+        fetchData();
+      }, []);
 
     
     const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -79,9 +102,8 @@ export function DrawPage() {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('theme', randTheme);
-        formData.append('type', '1'); 
+        formData.append('type', `${time.time}`); 
 
-        console.log(formData);
         API.post(`/draw/upload`, formData,
         {
             headers:{
@@ -106,9 +128,9 @@ export function DrawPage() {
 
     return (
         <S.CanvasContainer>
-            <div>
+            <S.ThemeStyle>
                 {randTheme}
-            </div>
+            </S.ThemeStyle>
             <Timer
                 initialTime={seconds}
                 onTimeout={() => {

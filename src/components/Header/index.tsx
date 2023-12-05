@@ -62,7 +62,7 @@ function Header() {
           }}
         >
           <Link
-            href={'/draw/ten-second'}
+            href={'/draw/ten-seconds'}
             className={router.pathname.split('/')[1] === 'draw' ? 'choice' : ''}
 
           >
