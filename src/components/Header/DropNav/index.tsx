@@ -17,14 +17,14 @@ export function InfoDropNav() {
 export function GallDropNav() {
     return (
         <S.DropNav>
-                <Link href={'/gallery/ten-second'}>
+                <Link href={'/gallery/ten-seconds'}>
                     10s
                 </Link>
-                <Link href={'/gallery/one-minuate'}>
-                    1m
+                <Link href={'/gallery/thirty-seconds'}>
+                    30s
                 </Link>
-                <Link href={'/gallery/three-minuate'}>
-                    3m
+                <Link href={'/gallery/one-minute'}>
+                    1m
                 </Link>
         </S.DropNav>
     )
@@ -34,14 +34,14 @@ export function GallDropNav() {
 export function PaintDropNav() {
     return (
         <S.DropNav>
-                <Link href={'/paint/ten-second'}>
+                <Link href={'/draw/ten-seconds'}>
                     10s
                 </Link>
-                <Link href={'/paint/one-minute'}>
-                    1m
+                <Link href={'/draw/thirty-seconds'}>
+                    30s
                 </Link>
-                <Link href={'/paint/three-minuate'}>
-                    3m
+                <Link href={'/draw/one-minute'}>
+                    1m
                 </Link>
         </S.DropNav>
     )

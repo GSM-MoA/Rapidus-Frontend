@@ -4,24 +4,46 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BestGalleryType } from "@/types/components/BestGalleryType";
 import API from "@/api";
+import Footer from "./Footer";
+import axios, { AxiosError } from "axios";
 
 
 function HomePage() {
     const [bestImg, setBestImg] = useState<BestGalleryType[]>([]);
 
     useEffect(() => {
-        for (let id = 0; id < 3; id++) {
-                API.get(`/draw/most-liked/type/${id + 1}`)
-                .then((res) => {
-                    API.get<Blob>(`/draw/${res.data.id}/image`, { responseType: 'blob' })
-                        .then((res) => {
-                            const blob = new Blob([res.data]);
-                            const url = URL.createObjectURL(blob);
-                            setBestImg(prev => [...prev, { key: id, url: url }]);
-                        })
-                })
+        const fetchBestImages = async () => {
+          for (let id = 0; id < 3; id++) {
+            try {
+              const res = await API.get(`/draw/most-liked/type/${id + 1}`);             
+
+              const imageRes = await API.get<Blob>(`/draw/${res.data.id}/image`, { responseType: 'blob' });
+      
+              const blob = new Blob([imageRes.data]);
+              const url = URL.createObjectURL(blob);
+      
+              setBestImg(prev => [...prev, { key: id, url: url }]);
+            } catch (error:any) {
+              handleFetchError(error, id);
+            }
+          }
+        };
+      
+        fetchBestImages();
+      }, []);
+
+      const handleFetchError = (error: AxiosError, id: number) => {
+        if (axios.isAxiosError(error) && error.response) {
+          if (error.response.status === 404) {
+            console.warn(`Image for ID ${id} not found. Skipping...`);
+          } else {
+            console.error(`Error fetching image for ID ${id}:`, error);
+          }
+        } else {
+          console.error(`Non-Axios error fetching image for ID ${id}:`, error);
         }
-    }, [])
+      };
+
 
     return (
         <S.HomePageContainer>
@@ -56,6 +78,7 @@ function HomePage() {
                     )
                 })}
             </S.HomePageCanvas>
+            <Footer />
         </S.HomePageContainer>
     )
 }

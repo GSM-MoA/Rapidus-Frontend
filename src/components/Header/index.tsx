@@ -55,20 +55,20 @@ function Header() {
         </li>
         <li
           onMouseEnter={() => {
-            setShowMenu('paint');
+            setShowMenu('draw');
           }}
           onMouseLeave={() => {
             setShowMenu('none')
           }}
         >
           <Link
-            href={'/paint/ten-second'}
-            className={router.pathname.split('/')[1] === 'paint' ? 'choice' : ''}
+            href={'/draw/ten-seconds'}
+            className={router.pathname.split('/')[1] === 'draw' ? 'choice' : ''}
 
           >
             Paint
           </Link>
-          {showMenu === 'paint' && (
+          {showMenu === 'draw' && (
             <DropNav.PaintDropNav />
           )}
         </li>
