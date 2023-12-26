@@ -1,4 +1,5 @@
 import DrawPage from '@/components/DrawPage';
+import Footer from '@/components/Footer';
 import Custom404 from '@/pages/404';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -49,9 +50,10 @@ const Draw = () => {
   }
 
   return (
-    <div>
+    <>
       <DrawPage time={time} />
-    </div>
+      <Footer/>
+    </>
   );
 };
 

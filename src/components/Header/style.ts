@@ -1,42 +1,53 @@
+import { IsHome } from '@/types/components/HeaderProps';
 import styled from 'styled-components';
 
-export const HeaderContainer = styled.header`
+export const HeaderContainer = styled.header<IsHome>`
     position: relative;
     top: 0;
     width: 100vw;
-    height: 8vh;
+    height: 15vh;
     border: none;
     display: flex;
     align-items: center;
     justify-content: space-between; 
+    background-color: ${(props) => (props.$isHome ? "none" :  "white")};
 `
 
-export const RapidusLogo = styled.div`
-    height: 0px;
-    display:flex;
-    padding: 0px 5vw;
-    justify-content: start;
+export const RapidusLogo = styled.div<IsHome>`
+  position: relative;
+  display: flex;
+  padding: 0px 5vw;
+  justify-content: center;
+  align-items:center;
+   path{
+     stroke:${(props) => (props.$isHome ? "#917AA8" :  "#5BF99A")};
+   }
+`;
+
+export const RapidusText = styled.div<IsHome>`
+    position: absolute;
+    display: flex;
+    path{
+         fill:${(props) => (props.$isHome ? "#white" :  "black")};
+    }
 `
 
-export const Categories = styled.ul`
+export const Categories = styled.ul<IsHome>`
     list-style: none;
     display: flex;
-    height: 70px;
-    font-size: 1.7rem;
+    font-size: 2rem;
     align-items: flex-end;
     justify-content: space-between;
-    li{
-        text-align:center;
+   
+    li {
+        text-align: center;
         padding: 0px 2vw;
-        &:hover{
-            color:white;
+
+        &:hover {
+            color: ${(props) => (props.$isHome ? "white" :  "#0BC3FD")};
+        }
+        .choice {
+            color: ${(props) => (props.$isHome ? "white" :  "#0BC3FD")};
         }
     }
-    a{
-        
-    }
-    .choice{
-        color:white
-    }
-
 `

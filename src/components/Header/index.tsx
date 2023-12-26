@@ -1,39 +1,45 @@
 import Link from 'next/link';
-import * as DropNav from './DropNav'
-import * as S from './style'
-import * as SVG from '../../../public/svg'
+import * as DropNav from './DropNav';
+import * as S from './style';
+import * as SVG from '../../../public/svg';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+
 
 function Header() {
   const router = useRouter();
   const [showMenu, setShowMenu] = useState<string>('none');
+  const isHome = router.pathname === '/';
+
   return (
-    <S.HeaderContainer>
-      <S.RapidusLogo>
-        <Link href={'/'}>
-          <SVG.RapidusLogo />
-        </Link>
+    <S.HeaderContainer $isHome = {isHome}>
+      <S.RapidusLogo $isHome = {isHome}>
+        <SVG.LogoBackground />
+        <S.RapidusText $isHome = {isHome}>
+          <Link href={'/'}>
+            <SVG.RapidusLogo />
+          </Link>
+        </S.RapidusText>
       </S.RapidusLogo>
-      <S.Categories>
+      <S.Categories $isHome = {isHome}>
         <li
           onMouseEnter={() => {
             setShowMenu('info');
             console.log(router);
           }}
           onMouseLeave={() => {
-            setShowMenu('none')
+            setShowMenu('none');
           }}
         >
           <Link
             href={'/information/rapidus'}
-            className={router.pathname.split('/')[1] === 'information' ? 'choice' : ''}
+            className={
+              router.pathname.split('/')[1] === 'information' ? 'choice' : ''
+            }
           >
             Information
           </Link>
-          {showMenu === 'info' && (
-            <DropNav.InfoDropNav />
-          )}
+          {showMenu === 'info' && <DropNav.InfoDropNav $isHome={isHome} />}
         </li>
 
         <li
@@ -41,16 +47,19 @@ function Header() {
             setShowMenu('gallery');
           }}
           onMouseLeave={() => {
-            setShowMenu('none')
-          }}>
+            setShowMenu('none');
+          }}
+        >
           <Link
             href={'/gallery/ten-second'}
-            className={router.pathname.split('/')[1] === 'gellery' ? 'choice' : ''}
+            className={
+              router.pathname.split('/')[1] === 'gellery' ? 'choice' : ''
+            }
           >
             Gallery
           </Link>
           {showMenu === 'gallery' && (
-            <DropNav.GallDropNav />
+            <DropNav.GallDropNav $isHome={isHome} />
           )}
         </li>
         <li
@@ -58,31 +67,25 @@ function Header() {
             setShowMenu('draw');
           }}
           onMouseLeave={() => {
-            setShowMenu('none')
+            setShowMenu('none');
           }}
         >
           <Link
             href={'/draw/ten-seconds'}
             className={router.pathname.split('/')[1] === 'draw' ? 'choice' : ''}
-
           >
-            Paint
+            Draw
           </Link>
-          {showMenu === 'draw' && (
-            <DropNav.PaintDropNav />
-          )}
+          {showMenu === 'draw' && <DropNav.DrawDropNav $isHome={isHome} />}
         </li>
         <li>
-          <Link
-            href={'/'}
-            className={router.pathname === '/' ? 'choice' : ''}>
+          <Link href={'/'} className={router.pathname === '/' ? 'choice' : ''}>
             Home
           </Link>
         </li>
       </S.Categories>
     </S.HeaderContainer>
-  )
+  );
 }
-
 
 export default Header;

@@ -2,10 +2,15 @@ import styled from "styled-components"
 
 
 export const CanvasContainer = styled.div`
-    position:fixed;
-    top:200px;
+    position:relative;
+    height:100vh;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    flex-direction: column;
     width:100%;
     text-align:center;
+    background-color: #FFC553;
 `
 export const CanvasStyle = styled.div`
     canvas {
@@ -14,7 +19,6 @@ export const CanvasStyle = styled.div`
         align-items:center;
         text-align:center;
         background-color:white;
-
     }
    
 `
@@ -48,6 +52,7 @@ export const UploadStyle = styled.div`
 `
 export const ThemeStyle = styled.div`
     display:flex;
+    padding:2rem;
     text-align:center;
     align-items:center;
     justify-content:center;

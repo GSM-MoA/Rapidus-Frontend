@@ -43,8 +43,8 @@ export function DrawPage( time : {time : number}) {
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const randNum: Number = Math.floor(Math.random() * 20);
-            const response : ThemeType = (await API.get(`/draw/theme-${randNum}`)).data;
+            const randNum: Number = Math.floor(Math.random() * 50);
+            const response : ThemeType = (await API.get(`/draw/theme/${randNum}`)).data;
             setRandTheme(response.krName);
           } catch (error) {
             console.error("API 호출 오류:", error);

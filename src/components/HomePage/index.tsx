@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BestGalleryType } from "@/types/components/BestGalleryType";
 import API from "@/api";
-import Footer from "./Footer";
+import Footer from "../Footer";
 import axios, { AxiosError } from "axios";
 
 

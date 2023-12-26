@@ -20,10 +20,8 @@ export const HomePageMainText = styled.div`
 
 export const HomePageSubText = styled.div`
     display:flex;
-    line-height:rem;
     margin: 1rem;
     flex-direction: column;
-    align-itams: flex-start;
     color:black;
     p{
         
@@ -36,7 +34,6 @@ export const HomePageRankText = styled.div`
     font-size: 1.8rem;
 `
 export const TextContainer = styled.div`
-    margin-top: 5rem;
     display:relateive;
     display:flex;
     flex-direction:column;
@@ -60,7 +57,7 @@ export const BestImg = styled.div`
     margin-left: 6.3rem;
     display:flex;
     align-items:center;
-    justify-contents:flex-end;
+    justify-content:flex-end;
     img{
         object-fit: contain;
     }
