@@ -21,17 +21,16 @@ const Timer: React.FC<TimerProps> = ({ initialTime, onTimeout }) => {
   };
 
   useEffect(() => {
-    requestRef.current = requestAnimationFrame(animate); 
+    requestRef.current = requestAnimationFrame(animate);
     return () => {
       if (requestRef.current) {
         cancelAnimationFrame(requestRef.current);
       }
     };
-    
-  }, [initialTime,onTimeout]);
+  }, [initialTime, onTimeout]);
 
   return <div>남은 시간: {seconds} 초</div>;
 };
 
-export default Timer;
 
+export default Timer;

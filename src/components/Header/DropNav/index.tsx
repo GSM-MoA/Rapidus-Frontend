@@ -1,6 +1,7 @@
 import Link from "next/link";
 import * as S from './style'
 import { IsHome } from "@/types/components/HeaderProps";
+import { useState } from "react";
 
 export function InfoDropNav({ $isHome }:IsHome) {
     return (
@@ -22,6 +23,7 @@ export function GallDropNav({ $isHome }:IsHome) {
 }
 
 export function DrawDropNav({ $isHome }:IsHome) {
+   
     return (
         <S.DropNav $isHome={$isHome}>
             <Link href={"/draw/ten-seconds"}>10s</Link>

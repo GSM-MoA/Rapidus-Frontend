@@ -2,11 +2,10 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import * as S from "./style";
 import Timer from "./Timer";
 import * as SVG from "../../../public/svg"
-import axios from "axios";
 import API from "@/api";
 import { ThemeType } from "@/types/components/ThemeType";
 
-export function DrawPage( time : {time : number}) {
+export function DrawPage( props : {time : number}) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [randTheme, setRandTheme] = useState<any>('');
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -27,18 +26,7 @@ export function DrawPage( time : {time : number}) {
           }
         }
     
-        switch (time.time) {
-          case 1:
-            setSeconds(10);
-            break;
-          case 2:
-            setSeconds(30);
-            break;
-          case 3:
-            setSeconds(60);
-            break;
-        }
-      }, [time.time]);
+      }, [props.time]);
     
       useEffect(() => {
         const fetchData = async () => {
@@ -50,10 +38,22 @@ export function DrawPage( time : {time : number}) {
             console.error("API 호출 오류:", error);
           }
         };
-    
+        setSeconds(reTimer(props.time))
         fetchData();
       }, []);
 
+    const reTimer = (time:number) => {
+        switch (time) {
+            case 1:
+                return 10;
+            case 2:
+                return 30;
+            case 3:
+                return 60;
+            default:
+                return 0;
+          }
+    }
     const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
         if (!context || seconds <= 0) return;
         const { offsetX, offsetY } = e.nativeEvent;
@@ -78,7 +78,7 @@ export function DrawPage( time : {time : number}) {
         setIsDrawing(false);
     };
 
-    const onReset = () => {
+    const onResetCanvas = () => {
         if (!context) return;
         if (seconds > 0) context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     }
@@ -103,7 +103,7 @@ export function DrawPage( time : {time : number}) {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('theme', randTheme);
-        formData.append('type', `${time.time}`); 
+        formData.append('type', `${props.time}`); 
 
         API.post(`/draw/upload`, formData,
         {
@@ -127,6 +127,17 @@ export function DrawPage( time : {time : number}) {
         setBrushSize(parseInt(e.target.value, 10));
     };
 
+    const handleTimeout = () => {
+        setSeconds(0);
+        setIsDrawing(false);
+      };
+    
+      const onReset = () => {
+        setSeconds(reTimer(props.time)); 
+        setIsDrawing(false);
+        onResetCanvas();
+      };
+    
     return (
         <S.CanvasContainer>
             <S.ThemeStyle>
@@ -150,7 +161,8 @@ export function DrawPage( time : {time : number}) {
                 />
             </S.CanvasStyle>
             <S.ToolBarStyle>
-                <S.Button onClick={onReset}>
+                <button onClick={onReset}>리셋</button>
+                <S.Button onClick={onResetCanvas}>
                     <SVG.ResetIcon />
                 </S.Button>
                 <S.ColorPickStyle>
