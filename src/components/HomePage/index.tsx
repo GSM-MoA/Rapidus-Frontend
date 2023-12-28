@@ -16,13 +16,8 @@ function HomePage() {
           for (let id = 0; id < 3; id++) {
             try {
               const res = await API.get(`/draw/most-liked/type/${id + 1}`);             
-
-              const imageRes = await API.get<Blob>(`/draw/${res.data.id}/image`, { responseType: 'blob' });
-      
-              const blob = new Blob([imageRes.data]);
-              const url = URL.createObjectURL(blob);
-      
-              setBestImg(prev => [...prev, { key: id, url: url }]);
+              const image:string = await API.get(`/draw/${res.data.id}/image`);
+              setBestImg(prev => [...prev, { key: id, url: image }]);
             } catch (error:any) {
               handleFetchError(error, id);
             }

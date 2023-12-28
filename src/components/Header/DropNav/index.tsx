@@ -22,6 +22,7 @@ export function GallDropNav({ $isHome }:IsHome) {
 }
 
 export function DrawDropNav({ $isHome }:IsHome) {
+   
     return (
         <S.DropNav $isHome={$isHome}>
             <Link href={"/draw/ten-seconds"}>10s</Link>
