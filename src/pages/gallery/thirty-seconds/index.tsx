@@ -5,7 +5,7 @@ import Gallery from '@/components/Gallery'
 export default function ThirtySecondsGallery() {
     return (
      <>
-        <Gallery time={3}/>
+        <Gallery time={2}/>
         <Footer/>
      </>
     )

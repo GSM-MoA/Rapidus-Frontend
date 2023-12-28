@@ -1,7 +1,6 @@
 import Link from "next/link";
 import * as S from './style'
 import { IsHome } from "@/types/components/HeaderProps";
-import { useState } from "react";
 
 export function InfoDropNav({ $isHome }:IsHome) {
     return (

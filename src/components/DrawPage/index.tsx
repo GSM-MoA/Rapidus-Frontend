@@ -1,48 +1,19 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Layer, Stage, Line, Rect } from "react-konva";
 import * as S from "./style";
-import Timer from "./Timer";
-import * as SVG from "../../../public/svg"
+import * as SVG from "../../../public/svg";
 import API from "@/api";
 import { ThemeType } from "@/types/components/ThemeType";
 
-export function DrawPage( props : {time : number}) {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [randTheme, setRandTheme] = useState<any>('');
+const DrawPage = (props: { time: number }) => {
+    const [randTheme, setRandTheme] = useState<string>("");
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
-    const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-    const [currentColor, setCurrentColor] = useState<string>('#000000');
+    const [lines, setLines] = useState<{ points: number[]; color: string }[]>([]);
+    const [currentColor, setCurrentColor] = useState<string>("#000000");
     const [seconds, setSeconds] = useState<number>(0);
     const [brushSize, setBrushSize] = useState<number>(5);
-
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (canvas) {
-          canvas.width = 500;
-          canvas.height = 500;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            setContext(ctx);
-            ctx.lineWidth = brushSize;
-          }
-        }
-    
-      }, [props.time]);
-    
-      useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const randNum: Number = Math.floor(Math.random() * 50);
-            const response : ThemeType = (await API.get(`/draw/theme/${randNum}`)).data;
-            setRandTheme(response.krName);
-          } catch (error) {
-            console.error("API 호출 오류:", error);
-          }
-        };
-        setSeconds(reTimer(props.time))
-        fetchData();
-      }, []);
-
-    const reTimer = (time:number) => {
+    const stageRef = useRef<any>(null);
+    const reTimer = (time: number) => {
         switch (time) {
             case 1:
                 return 10;
@@ -52,125 +23,162 @@ export function DrawPage( props : {time : number}) {
                 return 60;
             default:
                 return 0;
-          }
-    }
-    const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!context || seconds <= 0) return;
-        const { offsetX, offsetY } = e.nativeEvent;
-        context.beginPath();
-        context.moveTo(offsetX, offsetY);
-        setIsDrawing(true);
+        }
     };
 
-    const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!isDrawing || !context || seconds <= 0) return;
-        const { offsetX, offsetY } = e.nativeEvent;
-        context.strokeStyle = currentColor;
-        context.lineWidth = brushSize;
-        context.lineTo(offsetX, offsetY);
-        context.stroke();
+    const [timer, setTimer] = useState<number>(reTimer(props.time));
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [props.time]);
+
+    useEffect(() => {
+        if (timer === 0) {
+            setIsDrawing(false);
+        }
+    }, [timer]);
+
+    useEffect(() => {
+        setSeconds(reTimer(props.time));
+        fetchTheme();
+    }, [props.time]);
+
+    const fetchTheme = async () => {
+        try {
+            const randNum: number = Math.floor(Math.random() * 50);
+            const response: ThemeType = (
+                await API.get(`/draw/theme/${randNum}`)
+            ).data;
+            setRandTheme(response.krName);
+        } catch (error) {
+            console.error("API 호출 오류:", error);
+        }
+    };
+
+
+    const startDrawing = (e: any) => {
+        if (timer <= 0) return;
+        setIsDrawing(true);
+        setLines([...lines, { points: [e.evt.layerX, e.evt.layerY], color: currentColor }]);
+    };
+    const draw = (e: any) => {
+        if (!isDrawing || timer <= 0) return;
+        const lastLine = lines[lines.length - 1];
+        if (!lastLine.points) return;
+        lastLine.points = lastLine.points.concat([e.evt.layerX, e.evt.layerY]);
+        lines.splice(lines.length - 1, 1, lastLine);
+        setLines([...lines]);
     };
 
     const stopDrawing = () => {
-        if (context) {
-            context.closePath();
-        }
         setIsDrawing(false);
     };
 
     const onResetCanvas = () => {
-        if (!context) return;
-        if (seconds > 0) context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        if (seconds > 0) {
+            setLines([]);
+        }
     }
+    const onReset = () => {
+        setLines([]);
+        setTimer(reTimer(props.time));
+        fetchTheme();
+    };
 
     const onUpload = async () => {
-        const getCanvas: HTMLCanvasElement | null  = canvasRef.current;
-        
-        if (!getCanvas) {
-            console.error("그림이 존재하지 않습니다.");
+        const stage = stageRef.current;
+
+        if (!stage) {
+            console.error("스테이지가 존재하지 않습니다.");
             return;
         }
 
-        const blob:Blob | null = await new Promise((resolve) => getCanvas.toBlob(resolve, 'image/png'));
-        
-        if (!blob) {
-            console.error("Blob을 생성할 수 없습니다.");
-            return;
-        }
+        const dataUrl = stage.toDataURL();
+        const blob = await fetch(dataUrl).then((res) => res.blob());
 
-        const file = new File([blob!], 'drawing.png', { type: 'image/png' })
+        const file = new File([blob], 'drawing.png', { type: 'image/png' });
 
         const formData = new FormData();
         formData.append('file', file);
         formData.append('theme', randTheme);
-        formData.append('type', `${props.time}`); 
+        formData.append('type', `${props.time}`);
 
-        API.post(`/draw/upload`, formData,
-        {
-            headers:{
-                'Content-Type': 'multipart/form-data',
-            }
+        try {
+            const response = await API.post(`/draw/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+           if(response.status == 201){
+            alert('성공적으로 등록 되었습니다.');
+            onReset()
+           }
+        } catch (error) {
+            console.error("업로드 오류:", error);
         }
-            ).then(res => {
-                console.log(res.data.file);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
+    };
 
-    const onColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const onColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCurrentColor(e.target.value);
     };
 
-    const onBrushSizeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const onBrushSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBrushSize(parseInt(e.target.value, 10));
     };
 
-    const handleTimeout = () => {
-        setSeconds(0);
-        setIsDrawing(false);
-      };
-    
-      const onReset = () => {
-        setSeconds(reTimer(props.time)); 
-        setIsDrawing(false);
-        onResetCanvas();
-      };
-    
     return (
         <S.CanvasContainer>
-            <S.ThemeStyle>
-                {randTheme}
-            </S.ThemeStyle>
-
-            <Timer
-                initialTime={seconds}
-                onTimeout={() => {
-                    setSeconds(0);
-                    setIsDrawing(false)
-                }
-                } />
+            <S.ThemeStyle>{randTheme}</S.ThemeStyle>
+            남은 시간: {timer}
             <S.CanvasStyle>
-                <canvas
-                    ref={canvasRef}
+                <Stage
+                    width={500}
+                    height={500}
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
-                    onMouseOut={stopDrawing}
-                />
+                    ref={stageRef}
+                    style={{ background: "#ffffff" }}
+                >
+                    <Layer>
+                        <Rect width={500} height={500} fill="#ffffff" />
+                        {lines.map((line, i) => (
+                            <Line
+                                key={i}
+                                points={line.points}
+                                stroke={line.color}
+                                strokeWidth={brushSize}
+                                tension={0.5}
+                                lineCap="round"
+                            />
+                        ))}
+                    </Layer>
+                </Stage>
             </S.CanvasStyle>
             <S.ToolBarStyle>
-                <button onClick={onReset}>리셋</button>
-                <S.Button onClick={onResetCanvas}>
+                <S.Button onClick={onReset}>
                     <SVG.ResetIcon />
+                </S.Button>
+                <S.Button onClick={onResetCanvas}>
+                    <SVG.LitterBin/>
                 </S.Button>
                 <S.ColorPickStyle>
                     <input type="color" onChange={onColorChange} value={currentColor} />
                 </S.ColorPickStyle>
-                <input type="range" min="1" max="50" value={brushSize} onChange={onBrushSizeChange} />
+                <input
+                    type="range"
+                    min="1"
+                    max="50"
+                    value={brushSize}
+                    onChange={onBrushSizeChange}
+                />
             </S.ToolBarStyle>
-            {seconds == 0 && (
+            {timer === 0 && (
                 <S.UploadStyle>
                     <S.Button onClick={onUpload}>
                         <SVG.UploadIcon />
@@ -179,8 +187,6 @@ export function DrawPage( props : {time : number}) {
             )}
         </S.CanvasContainer>
     );
-
-}
-
+};
 
 export default DrawPage;
