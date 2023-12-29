@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Layer, Stage, Line, Rect } from "react-konva";
 import API from "@/api";
 import { ThemeType } from "@/types/components/ThemeType";
+import { v4 as uuidv4 } from "uuid"; 
 import * as S from "./style";
-import * as SVG from "../../../public/svg";
+import * as SVG from "@/../public/svg";
 
-const DrawPage: React.FC<{ time: number }> = ({ time }) => {
+const DrawPage = ({ time }: { time: number }) => {
   const [randTheme, setRandTheme] = useState<string>("");
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [lines, setLines] = useState<{ points: number[]; color: string; brushSize: number }[]>([]);
@@ -148,9 +149,9 @@ const DrawPage: React.FC<{ time: number }> = ({ time }) => {
         >
           <Layer>
             <Rect width={500} height={500} fill="#ffffff" />
-            {lines.map((line, i) => (
+            {lines.map((line) => (
               <Line
-                key={i}
+                key={uuidv4()}
                 points={line.points}
                 stroke={line.color}
                 strokeWidth={line.brushSize}
