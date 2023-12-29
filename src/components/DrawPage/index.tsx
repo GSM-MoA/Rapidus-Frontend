@@ -3,10 +3,10 @@ import { Layer, Stage, Line, Rect } from "react-konva";
 import API from "@/api";
 import { ThemeType } from "@/types/components/ThemeType";
 import { v4 as uuidv4 } from "uuid"; 
-import * as S from "./style";
 import * as SVG from "@/../public/svg";
+import * as S from "./style";
 
-const DrawPage = ({ time }: { time: number }) => {
+export default function DrawPage({ time }: { time: number }){
   const [randTheme, setRandTheme] = useState<string>("");
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [lines, setLines] = useState<{ points: number[]; color: string; brushSize: number }[]>([]);
@@ -185,4 +185,4 @@ const DrawPage = ({ time }: { time: number }) => {
   );
 };
 
-export default DrawPage;
+
