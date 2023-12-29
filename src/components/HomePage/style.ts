@@ -62,3 +62,27 @@ export const BestImg = styled.div`
         object-fit: contain;
     }
 `
+
+export const ImageFrame = styled.div`
+    position:relative;
+    display:flex;
+    color:black;
+`
+
+export const ThemeStyle = styled.span`
+    position:absolute;
+    padding:0.5rem;
+    top:4rem;
+    left:6rem;
+    z-index:1;
+    font-size: 1.3rem;
+`
+
+export const LikesStyle = styled.span`
+    position:absolute;
+    bottom:7rem;
+    z-index:1;
+    right:6rem;
+    padding:0.5rem;
+    font-size: 1.3rem;
+`

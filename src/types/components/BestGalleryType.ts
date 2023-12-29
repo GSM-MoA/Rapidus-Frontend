@@ -1,4 +1,7 @@
 export interface BestGalleryType{
-   key:number,
-   url:string
+   id:number,
+   filePath:string,
+   likes:number,
+   theme:string,
+   type:number
 }

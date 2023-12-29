@@ -106,17 +106,16 @@ export default function DrawPage({ time }: { time: number }){
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("theme", randTheme);
-    formData.append("type", `${time}`);
-
+    const jsonData = { theme: randTheme, type: `${time}` };
+    formData.append("data", new Blob([JSON.stringify(jsonData)], { type: "application/json" }));
+  
     try {
       const response = await API.post(`/draw/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      if (response.status === 201) {
+      if (response.status === 200) {
         alert("성공적으로 등록 되었습니다.");
         onReset();
       }

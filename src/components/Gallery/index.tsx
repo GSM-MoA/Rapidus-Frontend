@@ -12,7 +12,7 @@ export default function Gallery({ time }: { time: number }) {
     useEffect(() => {
         API.get(`/draw/search/type/${time}`)
             .then(response => {
-                setImages(response.data);
+                setImages(response.data.typeImageList);
             })
             .catch(error => {
                 console.error('이미지를 불러오는 중 에러 발생:', error);
@@ -20,7 +20,7 @@ export default function Gallery({ time }: { time: number }) {
     }, [time, images]);
 
     const handleLike = (id: number) => {
-        API.post(`/draw/${id}/like`)
+        API.patch(`/draw/like/${id}`)
             .catch(error => {
                 console.error('이미지를 불러오는 중 에러 발생:', error);
             });
@@ -40,6 +40,7 @@ export default function Gallery({ time }: { time: number }) {
                                 alt={`Image ${image.id}`}
                                 sizes='100%'
                                 fill
+                                priority
                             />
                         </S.ImageStyle>
                         <S.LikesLocation>

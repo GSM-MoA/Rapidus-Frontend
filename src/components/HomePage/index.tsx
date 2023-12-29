@@ -27,9 +27,15 @@ function HomePage() {
     const fetchBestImages = async () => {
       for (let id = 0; id < 3; id += 1) {
         try {
-          const res = await API.get(`/draw/most-liked/type/${id + 1}`);
-          const image: string = await API.get(`/draw/${res.data.id}/image`);
-          setBestImg((prev) => [...prev, { key: id, url: image }]);
+          const image = await API.get<BestGalleryType>(`/draw/most-liked/type/${id + 1}`);
+          console.log(image)
+          setBestImg((prev) => [...prev, {
+             id: image.data.id,
+             filePath: image.data.filePath,
+             likes:image.data.likes,
+             theme:image.data.theme,
+             type:image.data.type 
+            }]);
         } catch (error: any) {
           handleFetchError(error, id);
         }
@@ -64,12 +70,14 @@ function HomePage() {
       </S.TextContainer>
       <S.HomePageCanvas>
         {bestImg.map((list) => (
-          <div key={list.key}>
+          <S.ImageFrame key={list.id}>
             <SVG.CanvasImage />
+            <S.ThemeStyle>주제:{list.theme}</S.ThemeStyle>
             <S.BestImg>
-              <Image src={list.url} alt="best img" fill sizes="100%" />
+              <Image src={list.filePath} alt="best img" fill sizes="100%" priority/>
             </S.BestImg>
-          </div>
+            <S.LikesStyle>Likes:{list.likes}</S.LikesStyle>
+          </S.ImageFrame>
         ))}
       </S.HomePageCanvas>
       <Footer />
