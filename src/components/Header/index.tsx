@@ -53,7 +53,7 @@ function Header() {
           <Link
             href={'/gallery/ten-seconds'}
             className={
-              router.pathname.split('/')[1] === 'gellery' ? 'choice' : ''
+              router.pathname.split('/')[1] === 'gallery' ? 'choice' : ''
             }
           >
             Gallery

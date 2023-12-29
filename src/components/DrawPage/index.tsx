@@ -8,7 +8,7 @@ import { ThemeType } from "@/types/components/ThemeType";
 const DrawPage = (props: { time: number }) => {
     const [randTheme, setRandTheme] = useState<string>("");
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
-    const [lines, setLines] = useState<{ points: number[]; color: string }[]>([]);
+    const [lines, setLines] = useState<{ points: number[]; color: string, brushSize: number }[]>([]);
     const [currentColor, setCurrentColor] = useState<string>("#000000");
     const [seconds, setSeconds] = useState<number>(0);
     const [brushSize, setBrushSize] = useState<number>(5);
@@ -63,23 +63,27 @@ const DrawPage = (props: { time: number }) => {
     const startDrawing = (e: any) => {
         if (timer <= 0) return;
         setIsDrawing(true);
-        setLines([...lines, { points: [e.evt.layerX, e.evt.layerY], color: currentColor }]);
+        
+      
+        setLines([...lines, { points: [e.evt.layerX, e.evt.layerY], color: currentColor, brushSize }]);
     };
+    
     const draw = (e: any) => {
         if (!isDrawing || timer <= 0) return;
         const lastLine = lines[lines.length - 1];
         if (!lastLine.points) return;
+        
+       
         lastLine.points = lastLine.points.concat([e.evt.layerX, e.evt.layerY]);
         lines.splice(lines.length - 1, 1, lastLine);
         setLines([...lines]);
     };
-
     const stopDrawing = () => {
         setIsDrawing(false);
     };
 
     const onResetCanvas = () => {
-        if (seconds > 0) {
+        if (timer > 0) {
             setLines([]);
         }
     }
@@ -148,14 +152,14 @@ const DrawPage = (props: { time: number }) => {
                     <Layer>
                         <Rect width={500} height={500} fill="#ffffff" />
                         {lines.map((line, i) => (
-                            <Line
-                                key={i}
-                                points={line.points}
-                                stroke={line.color}
-                                strokeWidth={brushSize}
-                                tension={0.5}
-                                lineCap="round"
-                            />
+                           <Line
+                           key={i}
+                           points={line.points}
+                           stroke={line.color}
+                           strokeWidth={line.brushSize} 
+                           tension={0.5}
+                           lineCap="round"
+                       />
                         ))}
                     </Layer>
                 </Stage>
