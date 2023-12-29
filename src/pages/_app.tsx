@@ -1,7 +1,8 @@
 import type { AppProps } from 'next/app'
-import MSWComponent from '@/mocks/MSWComponent'
 import GlobalStyle from '@/styles/GlobalStyle'
+import MSWComponent from '@/mocks/MSWComponent'
 import Header from '@/components/Header'
+
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (

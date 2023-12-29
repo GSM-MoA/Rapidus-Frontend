@@ -23,5 +23,5 @@ export default function MSWComponent({ children }: { children: ReactNode }) {
     return null;
   }
 
-  return <>{children}</>;
+  return children;
 }

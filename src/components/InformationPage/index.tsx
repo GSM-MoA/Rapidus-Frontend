@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import * as S from './style';
 import { InformationProps } from '@/types/components/InformationProps';
+import * as S from './style';
 
 export default function InformationPage({ 
     imageSrc, 

@@ -1,11 +1,12 @@
 import axios, { AxiosError } from "axios";
-import * as S from "./style";
 import * as SVG from "@/../public/svg";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { BestGalleryType } from "@/types/components/BestGalleryType";
 import API from "@/api";
+import { BestGalleryType } from '@/types/components/BestGalleryType';
 import Footer from "../Footer";
+import * as S from "./style";
+
 
 function HomePage() {
   const [bestImg, setBestImg] = useState<BestGalleryType[]>([]);
@@ -24,7 +25,7 @@ function HomePage() {
 
   useEffect(() => {
     const fetchBestImages = async () => {
-      for (let id = 0; id < 3; id++) {
+      for (let id = 0; id < 3; id += 1) {
         try {
           const res = await API.get(`/draw/most-liked/type/${id + 1}`);
           const image: string = await API.get(`/draw/${res.data.id}/image`);

@@ -10,11 +10,10 @@ const DrawPage: React.FC<{ time: number }> = ({ time }) => {
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [lines, setLines] = useState<{ points: number[]; color: string; brushSize: number }[]>([]);
   const [currentColor, setCurrentColor] = useState<string>("#000000");
-  const [seconds, setSeconds] = useState<number>(0);
   const [brushSize, setBrushSize] = useState<number>(5);
   const stageRef = useRef<any>(null);
 
-  const reTimer = (time: number) => {
+  const reTimer = () => {
     switch (time) {
       case 1:
         return 10;
@@ -27,7 +26,7 @@ const DrawPage: React.FC<{ time: number }> = ({ time }) => {
     }
   };
 
-  const [timer, setTimer] = useState<number>(reTimer(time));
+  const [timer, setTimer] = useState<number>(reTimer());
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,11 +42,6 @@ const DrawPage: React.FC<{ time: number }> = ({ time }) => {
     }
   }, [timer]);
 
-  useEffect(() => {
-    setSeconds(reTimer(time));
-    fetchTheme();
-  }, [time]);
-
   const fetchTheme = async () => {
     try {
       const randNum: number = Math.floor(Math.random() * 50);
@@ -57,6 +51,11 @@ const DrawPage: React.FC<{ time: number }> = ({ time }) => {
       console.error("API 호출 오류:", error);
     }
   };
+
+  useEffect(() => {
+    fetchTheme();
+  }, [time]);
+
 
   const startDrawing = (e: any) => {
     if (timer <= 0) return;
@@ -87,7 +86,7 @@ const DrawPage: React.FC<{ time: number }> = ({ time }) => {
 
   const onReset = () => {
     setLines([]);
-    setTimer(reTimer(time));
+    setTimer(reTimer());
     fetchTheme();
   };
 
@@ -95,7 +94,7 @@ const DrawPage: React.FC<{ time: number }> = ({ time }) => {
     const stage = stageRef.current;
 
     if (!stage) {
-      console.error("스테이지가 존재하지 않습니다.");
+      alert("그림이 존재하지 않습니다.");
       return;
     }
 
@@ -151,7 +150,7 @@ const DrawPage: React.FC<{ time: number }> = ({ time }) => {
             <Rect width={500} height={500} fill="#ffffff" />
             {lines.map((line, i) => (
               <Line
-                key={`line-${i}`}
+                key={i}
                 points={line.points}
                 stroke={line.color}
                 strokeWidth={line.brushSize}
