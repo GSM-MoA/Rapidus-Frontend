@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import * as S from './style'
+import Image from 'next/image';
 import API from '@/api';
 import { GalleryImageType } from '@/types/components/GalleryImageType';
-import Image from 'next/image';
-import * as SVG from '@/../public/svg'
+import * as SVG from '@/../public/svg';
+import * as S from './style';
+
 
 export default function Gallery({ time }: { time: number }) {
     const [images, setImages] = useState<GalleryImageType[]>([]);
@@ -28,8 +29,8 @@ export default function Gallery({ time }: { time: number }) {
     return (
         <S.GalleryContainer>
             <S.GalleryWrapper>
-                {images.map((image, index) => (
-                    <S.GalleryFlame key={index}>
+                {images.map(image => (
+                    <S.GalleryFlame key={image.id}>
                         <S.ThemeStyle>
                             <b>주제:{image.theme}</b>
                         </S.ThemeStyle>

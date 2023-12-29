@@ -1,8 +1,8 @@
-import { useState, type PropsWithChildren, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 
 const isMockingMode = process.env.NEXT_PUBLIC_API_MOCKING === 'enabled';
 
-export const MSWComponent = ({ children }: PropsWithChildren) => {
+export default function MSWComponent({ children }: { children: ReactNode }) {
   const [mswReady, setMSWReady] = useState(() => !isMockingMode);
 
   useEffect(() => {
@@ -24,4 +24,4 @@ export const MSWComponent = ({ children }: PropsWithChildren) => {
   }
 
   return <>{children}</>;
-};
+}

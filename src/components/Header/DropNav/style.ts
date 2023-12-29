@@ -1,7 +1,7 @@
 import { IsHome } from "@/types/components/HeaderProps";
 import styled from "styled-components"
 
-export const DropNav = styled.div<IsHome>`
+const DropNav = styled.div<IsHome>`
     position:relative;
     height: 0rem;
     display:flex;
@@ -23,3 +23,5 @@ export const DropNav = styled.div<IsHome>`
         }
     }
 `;
+
+export default DropNav

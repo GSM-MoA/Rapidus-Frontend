@@ -1,10 +1,9 @@
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/router'; 
 import * as DropNav from './DropNav';
 import * as S from './style';
 import * as SVG from '../../../public/svg';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-
 
 function Header() {
   const router = useRouter();
@@ -12,16 +11,16 @@ function Header() {
   const isHome = router.pathname === '/';
 
   return (
-    <S.HeaderContainer $isHome = {isHome}>
-      <S.RapidusLogo $isHome = {isHome}>
+    <S.HeaderContainer $isHome={isHome}>
+      <S.RapidusLogo $isHome={isHome}>
         <SVG.LogoBackground />
-        <S.RapidusText $isHome = {isHome}>
+        <S.RapidusText $isHome={isHome}>
           <Link href={'/'}>
             <SVG.RapidusLogo />
           </Link>
         </S.RapidusText>
       </S.RapidusLogo>
-      <S.Categories $isHome = {isHome}>
+      <S.Categories $isHome={isHome}>
         <li
           onMouseEnter={() => {
             setShowMenu('info');

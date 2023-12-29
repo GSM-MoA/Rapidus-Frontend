@@ -30,9 +30,6 @@ const getMostPicture = rest.get(
             return res(ctx.status(404), ctx.json({ error: "Image not found" }));
         }
 
-        // 이미지 응답을 보내기 위해 데이터 URI 형식으로 변환
-
-        // Content-Type을 이미지로 설정하고 이미지 데이터 URI를 응답으로 보냄
         return res(
             ctx.set({
                 'Content-Type': 'image/png'

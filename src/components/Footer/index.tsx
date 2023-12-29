@@ -1,8 +1,9 @@
-import * as S from "./style";
+import FooterStyle from "./style";
+
 
 function Footer() {
   return (
-    <S.FooterStyle/>
+    <FooterStyle/>
   )
 }
 

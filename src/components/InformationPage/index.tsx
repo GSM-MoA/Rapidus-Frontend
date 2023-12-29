@@ -14,14 +14,14 @@ export default function InformationPage({
   return (
     <S.InformatinContainer>
       <S.InfoImageStyle>
-        <Image src={imageSrc} alt={altText} fill sizes='100%' priority={true} />
+        <Image src={imageSrc} alt={altText} fill sizes='100%' priority />
       </S.InfoImageStyle>
       <S.ExplanText>
         <S.Subtitle>
           {title}
         </S.Subtitle>
         <S.ContentsStyle>
-            {content}
+          {content}
         </S.ContentsStyle>
       </S.ExplanText>
 
@@ -30,7 +30,7 @@ export default function InformationPage({
           {title2}
         </S.Subtitle>
         <S.ContentsStyle>
-            {content2}
+          {content2}
         </S.ContentsStyle>
       </S.ExplanText>
     </S.InformatinContainer>
