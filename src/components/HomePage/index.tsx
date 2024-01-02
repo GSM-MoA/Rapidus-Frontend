@@ -28,7 +28,6 @@ function HomePage() {
       for (let id = 0; id < 3; id += 1) {
         try {
           const image = await API.get<BestGalleryType>(`/draw/most-liked/type/${id + 1}`);
-          console.log(image)
           setBestImg((prev) => [...prev, {
              id: image.data.id,
              filePath: image.data.filePath,
